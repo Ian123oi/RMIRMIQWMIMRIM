@@ -120,9 +120,7 @@ $().ready(function () {
             percorreCobra: function () {
                         var alo = alo2-1;
                         if (snake[0].vx == +2) {
-                            if (alo2 = 1) {
-                        this.x = snake[alo].x - snake[alo].l; 
-                    }
+                        this.x = snake[alo].x - snake[alo].l;
                         this.y = snake[alo].y;
                         }
                         else if (snake[0].vx == -2) {
