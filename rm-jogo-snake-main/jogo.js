@@ -5,6 +5,9 @@ $().ready(function () {
     var snake = [];
     var oi = 0;
     var alo2 = 0;
+    var ColiParede = false;
+    
+
     var obj2 = {
         "vx": 0,
         "vy": 0,
@@ -13,13 +16,11 @@ $().ready(function () {
         "l": 15,
         "a": 15,
         "cor": "pink",
-    
         desenharObjeto: function () {
             ctx.fillStyle = this.cor;
             ctx.fillRect(this.x, this.y, this.l, this.a);
         }
     }
-
     function detectaColisao(o1, o2) {
         var top1 = o1.y;
         var top2 = o2.y;
@@ -36,55 +37,73 @@ $().ready(function () {
             colisao = false;
         }
     }
-
+    
     function desenharTela() {
-        apagarTela(); alo2==0;
+        apagarTela(); alo2=snake.length - 1;
         //obj.atualiza();
-      
-        snake.forEach (function() {
-        if (alo2 !== 0) {
-        snake[alo2].percorreCobra();
         
-        
-        console.log("oi"); }
-        alo2++;
-        
-        });
     snake[0].atualiza();
         detectaColisao(snake[0], obj2);
         if(colisao==true){
             snake.push(criaItemSnake());
+            
             //alterar parametros
         }
+        document.getElementById('pontuacao').value = (snake.length) - 1;
+        snake.forEach (function() {
+            if (alo2!==0 && alo2!==snake.length && alo2>0 ) {
+                snake[alo2].percorreCobra();
+                
+            }
+            alo2--;    
+            }); 
 
         detectaLimite(snake[0]);
-
-        snake[0].desenharObjeto();
+        var alo4=0;
+        snake.forEach(function() {
+        snake[alo4].desenharObjeto();
+        alo4++
+        })
         obj2.desenharObjeto();
         
+        if (ColiParede === true) {
+            alert ("game over!");
+            snake.length = 1;
+            snake[0].x = 50;
+            snake[0].y = 50;
+            snake[0].vx = 0;
+            snake[0].vy = 0;
+            ColiParede = false;
+        }
+
         requestAnimationFrame(desenharTela);
     }
     function detectaLimite(obj) {
         if (obj.x < 0) {
             obj.x = 0;
             obj.vx = 0;
+            ColiParede = true;
         }
         if (obj.y < 0) {
             obj.y = 0;
             obj.vy = 0;
+            ColiParede = true;
         }
         if (obj.x + obj.l > canvas.width) {
             obj.x = canvas.width - obj.l;
             obj.vx = 0;
+            ColiParede = true;
         }
         if (obj.y + obj.a > canvas.height) {
             obj.y = canvas.height - obj.a;
             obj.vy = 0;
+            ColiParede = true;
         }
     }
     function apagarTela() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
+    
     function criaItemSnake() {
         return {
             "vx": 0,
@@ -98,20 +117,34 @@ $().ready(function () {
                 this.x += this.vx;
                 this.y += this.vy;
             },
-            percorreCobra: function() {
-               
-                      var alo = alo2-1;
-                        this.x = snake[alo].x;
+            percorreCobra: function () {
+                        var alo = alo2-1;
+                        if (snake[0].vx == +2) {
+                            if (alo2 = 1) {
+                        this.x = snake[alo].x - snake[alo].l; 
+                    }
                         this.y = snake[alo].y;
-                        
-                        
-                        
-                    
+                        }
+                        else if (snake[0].vx == -2) {
+                            this.x = snake[alo].x + snake[alo].l;
+                            this.y = snake[alo].y;
 
-                
+                            }
+                        else if (snake[0].vy == +2) {
+                                this.y = snake[alo].y - snake[alo].a;
+                                this.x = snake[alo].x;
+                                }
+                                else if (snake[0].vy == -2) {
+                                    this.y = snake[alo].y + snake[alo].a;
+                                    this.x = snake[alo].x;
+                                    }
+
+                        
+                        this.cor = "red";
             },
             desenharObjeto: function () {
                 if (colisao) {
+                    
                     obj2.x = Math.random() * (canvas.width - obj2.l);
                     obj2.y = Math.random() * (canvas.height - obj2.a);
 
@@ -144,4 +177,7 @@ $().ready(function () {
             snake[0].vx = 0;
         }
     });
+
+    
+
 });
